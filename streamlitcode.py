@@ -1,5 +1,5 @@
 # bank_app.py
-import streamlitcode as st
+import streamlit as st
 import json
 from pathlib import Path
 import random
