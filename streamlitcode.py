@@ -21,7 +21,7 @@ def save_data(data):
     with open(DATABASE, "w") as f:
         json.dump(data, f, indent=4)
 
-# ===================== ACCOUNT NUMBER GENERATOR =====================
+# ===================== account_number GENERATOR =====================
 def generate_account_number():
     alpha = random.choices(string.ascii_uppercase, k=5)
     digits = random.choices(string.digits, k=4)
@@ -71,29 +71,30 @@ def main():
                         "email": email.strip(),
                         "phone number": int(phone),
                         "pin": int(pin),
-                        "account number": account_no,
+                        "account_number": account_no,
                         "balance": 0
                     }
                     data.append(new_user)
                     save_data(data)
                     st.success(f"Account Created Successfully!")
                     st.balloons()
-                    st.info(f"Your Account Number: **{account_no}**")
+                    st.info(f"Your account_number: **{account_no}**")
                     st.write("Save this number – you'll need it to log in!")
 
     # ===================== DEPOSIT MONEY =====================
     elif choice == "Deposit Money":
         st.subheader("Deposit Money")
         with st.form("deposit_form"):
-            acc_no = st.text_input("Account Number")
+            acc_no = st.text_input("account_number")
             pin = st.text_input("PIN", type="password", max_chars=4)
             amount = st.number_input("Amount to Deposit (₹)", min_value=1, max_value=10000)
 
             submitted = st.form_submit_button("Deposit")
             if submitted:
-                user = next((u for u in data if u["account number"] == acc_no and u["pin"] == int(pin or 0)), None)
+                user = next((u for u in data if u.get("account_number") == acc_no and u.get("pin") == int(pin or 0)),None)
+                # user = next((u for u in data if u["account_number"] == acc_no and u["pin"] == int(pin or 0)), None)
                 if not user:
-                    st.error("Invalid Account Number or PIN!")
+                    st.error("Invalid account_number or PIN!")
                 elif amount > 10000:
                     st.error("Maximum deposit limit is ₹10,000 per transaction!")
                 else:
@@ -102,19 +103,20 @@ def main():
                     st.success(f"₹{amount} deposited successfully!")
                     st.write(f"**New Balance: ₹{user['balance']}**")
 
-    # ===================== WITHDRAW MONEY =====================
+    # ===================== WITHDRAW MONEY ===================== streamlit run streamlitcode.py
     elif choice == "Withdraw Money":
         st.subheader("Withdraw Money")
         with st.form("withdraw_form"):
-            acc_no = st.text_input("Account Number")
+            acc_no = st.text_input("account_number")
             pin = st.text_input("PIN", type="password", max_chars=4)
             amount = st.number_input("Amount to Withdraw (₹)", min_value=1)
 
             submitted = st.form_submit_button("Withdraw")
             if submitted:
-                user = next((u for u in data if u["account number"] == acc_no and u["pin"] == int(pin or 0)), None)
+                user = next((u for u in data if u.get("account_number") == acc_no and u.get("pin") == int(pin or 0)),None)
+                # user = next((u for u in data if u["account_number"] == acc_no and u["pin"] == int(pin or 0)), None)
                 if not user:
-                    st.error("Invalid Account Number or PIN!")
+                    st.error("Invalid account_number or PIN!")
                 elif amount > user["balance"]:
                     st.error(f"Insufficient balance! Available: ₹{user['balance']}")
                 else:
@@ -126,11 +128,12 @@ def main():
     # ===================== VIEW DETAILS =====================
     elif choice == "View Balance & Details":
         st.subheader("Account Details & Balance")
-        acc_no = st.text_input("Enter Account Number")
+        acc_no = st.text_input("Enter account_number")
         pin = st.text_input("Enter PIN", type="password", max_chars=4)
 
         if st.button("Show Details"):
-            user = next((u for u in data if u["account number"] == acc_no and u["pin"] == int(pin or 0)), None)
+            user = next((u for u in data if u.get("account_number") == acc_no and u.get("pin") == int(pin or 0)),None)
+            # user = next((u for u in data if u["account_number"] == acc_no and u["pin"] == int(pin or 0)), None)
             if not user:
                 st.error("Invalid credentials!")
             else:
@@ -139,17 +142,17 @@ def main():
                 **Name:** {user['name']}  
                 **Email:** {user['email']}  
                 **Phone:** {user['phone number']}  
-                **Account Number:** `{user['account number']}`  
+                **account_number:** `{user['account_number']}`  
                 **Current Balance:** ₹{user['balance']:,}
                 """)
 
     # ===================== UPDATE DETAILS =====================
     elif choice == "Update Details":
         st.subheader("Update Account Details")
-        acc_no = st.text_input("Account Number")
+        acc_no = st.text_input("account_number")
         pin = st.text_input("Current PIN", type="password", max_chars=4)
-
-        user = next((u for u in data if u["account number"] == acc_no and u["pin"] == int(pin or 0)), None)
+        user = next((u for u in data if u.get("account_number") == acc_no and u.get("pin") == int(pin or 0)),None)
+        # user = next((u for u in data if u["account_number"] == acc_no and u["pin"] == int(pin or 0)), None)
 
         if user:
             st.success("Account verified!")
@@ -182,18 +185,19 @@ def main():
                     st.rerun()
         else:
             if st.button("Verify Account"):
-                st.error("Invalid Account Number or PIN!")
+                st.error("Invalid account_number or PIN!")
 
     # ===================== DELETE ACCOUNT =====================
     elif choice == "Delete Account":
         st.subheader("Delete Account ⚠️")
         st.warning("This action is permanent and cannot be undone!")
 
-        acc_no = st.text_input("Account Number to Delete")
+        acc_no = st.text_input("account_number to Delete")
         pin = st.text_input("PIN", type="password", max_chars=4)
 
         if st.button("Delete Permanently", type="primary"):
-            user = next((u for u in data if u["account number"] == acc_no and u["pin"] == int(pin or 0)), None)
+            user = next((u for u in data if u.get("account_number") == acc_no and u.get("pin") == int(pin or 0)),None)
+            # user = next((u for u in data if u["account_number"] == acc_no and u["pin"] == int(pin or 0)), None)
             if not user:
                 st.error("Invalid credentials!")
             else:
